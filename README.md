@@ -2,6 +2,10 @@
 
 Short url generator with no database required.
 
+Language: C#
+
+Platform: ASP.Net 4.7
+
 See the [change log](CHANGELOG.md) for changes and road map.
 
 ## Features
