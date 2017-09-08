@@ -1,6 +1,6 @@
-# {Name}
+# ShortUrl
 
-{Description}
+Short url generator with no database required.
 
 See the [change log](CHANGELOG.md) for changes and road map.
 
