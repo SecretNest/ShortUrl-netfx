@@ -16,7 +16,7 @@ See the [change log](CHANGELOG.md) for changes and road map.
 ## Install
 
 1 Edit DefaultSite setting in web.config:
-	When this site is access by an unknown host, the browser will be redirected to this site.
+	When this site is accessed with an unknown host name, the browser will be redirected to this site.
 	
 2 Create Setting.*.txt in the root folder.
 
