@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 
-namespace SecretNest.ShortUrl
+namespace UpgradeConfigFile
 {
-    public class Setting
+    public class Setting11
     {
         public UrlSetting Default;
         public string ManageKey;

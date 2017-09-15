@@ -1,1 +1,1 @@
-{"Default":"https://www.google.com","ManageKey":"$$$$Manage$$$$","ReloadKey":"$$$$Reload$$$$","Records":{"sn":"http://secretnest.info"}}
+{"Default":{"Url":"https://www.google.com","IsPermanent":false},"ManageKey":"$$$$Manage$$$$","ReloadKey":"$$$$Reload$$$$","Records":{"sn":{"Url":"http://secretnest.info","IsPermanent":false}}}

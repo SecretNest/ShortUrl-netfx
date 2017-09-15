@@ -1,12 +1,11 @@
-# Road map
-
-- [x] A feature that has been completed
-- [ ] A feature that has NOT yet been completed
-
 # Change log
 
 Initial release
 
+## 1.1
+- Option to use HTTP 301 (Permanently) instead of 302.
+- Downgrade the requirement of dotnet Framework to 4.0.
+
 ## 1.0
 
-- [x] Multiple host name supported.
+- Multiple host name supported.

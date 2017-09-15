@@ -4,9 +4,9 @@ Short url generator with no database required.
 
 Language: C#
 
-Platform: ASP.Net 4.7
+Platform: ASP.Net 4.0
 
-See the [change log](CHANGELOG.md) for changes and road map.
+See the [change log](CHANGELOG.md) for changes.
 
 ## Features
 

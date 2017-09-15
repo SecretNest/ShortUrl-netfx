@@ -24,7 +24,7 @@ namespace SecretNest.ShortUrl
 
             if (string.IsNullOrWhiteSpace(code))
             {
-                context.Response.Redirect(setting.Default);
+                Redirect(context, setting.Default);
             }
             else if (code == setting.ReloadKey)
             {
@@ -37,21 +37,23 @@ namespace SecretNest.ShortUrl
             }
             else if (setting.Records.TryGetValue(code, out var url))
             {
-                context.Response.Redirect(url);
+                Redirect(context, url);
             }
             else
             {
-                context.Response.Redirect(setting.Default);
+                Redirect(context, setting.Default);
             }
         }
 
         void ModifySetting(HttpContext context, string host, Setting currentSetting)
         {
             var settingDefault = context.Request["default"];
+            var settingDefaultPermanent = context.Request.Params.GetValues("defaultPermanent") != null;
             var settingReload = context.Request["reload"];
             var settingManage = context.Request["manage"];
             var settingKey = context.Request["key"];
             var settingValue = context.Request["value"];
+            var settingValuePermanent = context.Request.Params.GetValues("valuePermanent") != null;
             var settingOperate = context.Request["operate"];
             Setting setting;
 
@@ -59,7 +61,7 @@ namespace SecretNest.ShortUrl
             {
                 setting = new Setting();
                 if (!string.IsNullOrWhiteSpace(settingDefault))
-                    setting.Default = settingDefault;
+                    setting.Default = new UrlSetting() { Url = settingDefault, IsPermanent = settingDefaultPermanent };
                 if (!string.IsNullOrWhiteSpace(settingReload))
                     setting.ReloadKey = settingReload;
                 if (!string.IsNullOrWhiteSpace(settingManage))
@@ -100,7 +102,7 @@ namespace SecretNest.ShortUrl
                     }
                     else
                     {
-                        setting.Records[settingKey] = settingValue;
+                        setting.Records[settingKey] = new UrlSetting() { Url = settingValue, IsPermanent = settingValuePermanent };
                     }
                 }
 
@@ -113,17 +115,16 @@ namespace SecretNest.ShortUrl
 
             context.Response.Write("<html><head><title>");
             context.Response.Write(host);
-            context.Response.Write("</title></head><body><form action=\"\" method=\"post\">These values cannot be null, empty or spaces only.<br /><table border=\"1\" style=\"width:100%\"><tr><th><p style=\"text - align:left; \">Setting</p></th><th><p style=\"text - align:left; \">Value</p></th></tr><tr><td>Default</td><td><input type=\"text\" name=\"default\" value=\"");
-            context.Response.Write(setting.Default);
-            context.Response.Write("\" style=\"width:100%\" /></td></tr><tr><td>Reload</td><td><input type=\"text\" name=\"reload\" value=\"");
+            context.Response.Write("</title></head><body><form action=\"\" method=\"post\">These values cannot be null, empty or spaces only.<br /><table border=\"1\" style=\"width: 100%; table-layout: fixed;\"><col width=\"400\"><col width=\"*\"><tr><th>Setting</th><th>Value</th></tr><tr><td>Default</td><td><input type=\"text\" name=\"default\" value=\"");
+            context.Response.Write(setting.Default.Url);
+            context.Response.Write("\" style=\"width:100%\" /></td></tr><tr><td>Using Move Permanent (HTTP 301) instead</td><td><input type=\"checkbox\" name=\"defaultPermanent\" value=\"1\" ");
+            if (setting.Default.IsPermanent)
+            context.Response.Write("checked ");
+            context.Response.Write("/>Permanent</td></tr><tr><td>Reload Key</td><td><input type=\"text\" name=\"reload\" value=\"");
             context.Response.Write(setting.ReloadKey);
-            context.Response.Write("\" style=\"width:100%\" /></td></tr><tr><td>Manage</td><td><input type=\"text\" name=\"manage\" value=\"");
+            context.Response.Write("\" style=\"width:100%\" /></td></tr><tr><td>Manage Key</td><td><input type=\"text\" name=\"manage\" value=\"");
             context.Response.Write(setting.ManageKey);
-            context.Response.Write("\" style=\"width:100%\" /></td></tr></table><input type=\"hidden\" name=\"operate\" value=\"main\" /><input type=\"hidden\" name=\"code\" value=\"");
-            context.Response.Write(setting.ManageKey);
-            context.Response.Write("\" /><input type=\"submit\" value=\"Save\" /></form><br /><form action=\"\" method=\"post\"><input type=\"hidden\" name=\"operate\" value=\"record\" /><input type=\"hidden\" name=\"code\" value=\"");
-            context.Response.Write(setting.ManageKey);
-            context.Response.Write("\" /><br />Records:<br /><table border=\"1\" style=\"width:100%\"><tr><th><p style=\"text - align:left; \">Operate</p></th><th><p style=\"text - align:left; \">Key</p></th><th><p style=\"text - align:left; \">Value</p></th></tr><tr><td><p style=\"text - align:left; \">Add / Change</p></td><td><input type=\"text\" name=\"key\" style=\"width:100%\" /></td><td><input type=\"text\" name=\"value\" style=\"width:100%\" /></td></tr>");
+            context.Response.Write("\" style=\"width:100%\" /></td></tr></table><input type=\"hidden\" name=\"operate\" value=\"main\" /><input type=\"submit\" value=\"Save\" /></form><br /><form action=\"\" method=\"post\"><input type=\"hidden\" name=\"operate\" value=\"record\" /><br />Records:<br /><table border=\"1\" style=\"width: 100%; table-layout: fixed;\" ><col width=\"250\"><col width=\"250\"><col width=\"100\"><col width=\"*\"><tr><th>Operate</th><th>Key</th><th>Permanent</th><th>Url</th></tr><tr><td><p style=\"text - align:left; \">Add / Change</p></td><td><input type=\"text\" name=\"key\" style=\"width:100%\" /></td><td><input type=\"checkbox\" name=\"valuePermanent\" />Permanent</td><td><input type=\"text\" name=\"value\" style=\"width:100%\" /></td></tr>");
             var records = setting.Records.OrderBy(i => i.Key).ToArray();
             if (records.Any())
             {
@@ -138,7 +139,16 @@ namespace SecretNest.ShortUrl
                     context.Response.Write("</td><td>");
                     context.Response.Write(HttpUtility.HtmlEncode(record.Key));
                     context.Response.Write("</td><td>");
-                    context.Response.Write(HttpUtility.HtmlEncode(record.Value));
+                    if (record.Value.IsPermanent)
+                    {
+                        context.Response.Write("Permanent");
+                    }
+                    else
+                    {
+                        context.Response.Write("Temporarily");
+                    }
+                    context.Response.Write("</td><td>");
+                    context.Response.Write(HttpUtility.HtmlEncode(record.Value.Url));
                     context.Response.Write("</td></tr>");
                 }
             }
@@ -150,6 +160,18 @@ namespace SecretNest.ShortUrl
             get
             {
                 return false;
+            }
+        }
+
+        void Redirect(HttpContext context, UrlSetting setting)
+        {
+            if (setting.IsPermanent)
+            {
+                context.Response.RedirectPermanent(setting.Url);
+            }
+            else
+            {
+                context.Response.Redirect(setting.Url);
             }
         }
     }
