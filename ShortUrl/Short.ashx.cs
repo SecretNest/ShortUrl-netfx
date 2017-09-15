@@ -145,7 +145,7 @@ namespace SecretNest.ShortUrl
                     }
                     else
                     {
-                        context.Response.Write("Temporarily");
+                        context.Response.Write("Temporary");
                     }
                     context.Response.Write("</td><td>");
                     context.Response.Write(HttpUtility.HtmlEncode(record.Value.Url));
