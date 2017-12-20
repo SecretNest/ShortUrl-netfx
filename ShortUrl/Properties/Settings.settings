@@ -8,5 +8,8 @@
     <Setting Name="SettingNameFormat" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Setting.{0}.txt</Value>
     </Setting>
+    <Setting Name="RedirectNameFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Redirect.{0}.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -10,46 +10,86 @@ namespace SecretNest.ShortUrl
 {
     public class SettingHelper
     {
+        static ConcurrentDictionary<string, string> Redirected = new ConcurrentDictionary<string, string>();
         static ConcurrentDictionary<string, Setting> Settings = new ConcurrentDictionary<string, Setting>();
         public static string DefaultSite = Properties.Settings.Default.DefaultSite;
+        static string RedirectNameFormat = Properties.Settings.Default.RedirectNameFormat;
         static string SettingNameFormat = Properties.Settings.Default.SettingNameFormat;
 
-        static string GetFileName(string hostName)
+        static string GetRedirectFileName(string hostName)
         {
-            return HttpContext.Current.Server.MapPath(String.Format(SettingNameFormat, hostName));
+            return HttpContext.Current.Server.MapPath(string.Format(RedirectNameFormat, hostName));
+        }
+
+        static string GetSettingFileName(string hostName)
+        {
+            return HttpContext.Current.Server.MapPath(string.Format(SettingNameFormat, hostName));
+        }
+
+        static string GetRealHostName(string hostName)
+        {
+            return Redirected.GetOrAdd(hostName, host =>
+            {
+                string fileName = GetRedirectFileName(host);
+                if (File.Exists(fileName))
+                {
+                    var fileContent = File.ReadAllText(fileName);
+                    return fileContent;
+                }
+                else
+                {
+                    return host;
+                }
+            });
         }
 
         public static Setting GetSetting(string hostName)
         {
-            try
+            hostName = GetRealHostName(hostName);
+
+            return Settings.GetOrAdd(hostName, host =>
             {
-                return Settings.GetOrAdd(hostName, host =>
+                string fileName = GetSettingFileName(host);
+                if (File.Exists(fileName))
                 {
-                    string fileName = GetFileName(host);
                     var fileContent = File.ReadAllText(fileName);
                     var setting = JsonConvert.DeserializeObject<Setting>(fileContent);
                     return setting;
-                });
-            }
-            catch
-            {
-                return null;
-            }
+                }
+                else
+                {
+                    return null;
+                }
+            });
         }
 
         public static void Reload(string hostName)
         {
-            string fileName = GetFileName(hostName);
-            var fileContent = File.ReadAllText(fileName);
+            string fileName = GetRedirectFileName(hostName);
+            string fileContent;
+            if (File.Exists(fileName))
+            {
+                fileContent = File.ReadAllText(fileName);
+                Redirected[hostName] = fileContent;
+                hostName = fileContent;
+            }
+            else
+            {
+                Redirected[hostName] = hostName;
+            }
+            fileName = GetSettingFileName(hostName);
+            fileContent = File.ReadAllText(fileName);
             var setting = JsonConvert.DeserializeObject<Setting>(fileContent);
             Settings[hostName] = setting;
         }
 
         public static void Save(string hostName, Setting setting)
         {
+            hostName = GetRealHostName(hostName);
+
             Settings[hostName] = setting;
 
-            string fileName = GetFileName(hostName);
+            string fileName = GetSettingFileName(hostName);
             var fileContent = JsonConvert.SerializeObject(setting);
             File.WriteAllText(fileName, fileContent);
         }

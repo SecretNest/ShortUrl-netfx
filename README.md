@@ -20,15 +20,23 @@ See the [change log](CHANGELOG.md) for changes.
 	
 2 Create Setting.*.txt in the root folder.
 
-	2.1 Copy file from Setting.localhost.txt to new name. * is the host name of your web site, like Setting.www.google.com.txt.
+	2.1 Copy file from Setting.localhost.txt to new name. * is the host name of your web site, like "Setting.www.google.com.txt" (without quotes).
 	
 	2.2 All settings of this file can be changed later online.
 	
 	2.3 Each host need a dedicated file.
 
-3 Upload files to server, including: Setting.*.txt, Short.ashx, Web.config, bin folder and its contents.
+3 Optional: If your domain has aliases.
 
-4 Access your site url with $$$$Manage$$$$ to setup. e.g. http://MySite.com/$$$$Manage$$$$
+    3.1 Create Redirect.*.txt in the root folder. * is the alias host name of your web site, like "Setting.www1.google.com.txt" (without quotes).
+
+	3.2 The content of the text file should be the target host name, like "www.google.com" (without quotes).
+
+	3.3 Each alias host need a dedicated file.
+
+4 Upload files to server, including: Setting.*.txt, Redirect.*.txt, Short.ashx, Web.config, bin folder and its contents.
+
+5 Access your site url with $$$$Manage$$$$ to setup. e.g. http://MySite.com/$$$$Manage$$$$
 
 ## Setup Page
 Default: The default redirect url. When the key cannot be recognized, the request will be redirected to this url.
