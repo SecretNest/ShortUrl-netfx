@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace SecretNest.ShortUrl
@@ -124,14 +125,17 @@ namespace SecretNest.ShortUrl
             context.Response.Write(setting.ReloadKey);
             context.Response.Write("\" style=\"width:100%\" /></td></tr><tr><td>Manage Key</td><td><input type=\"text\" name=\"manage\" value=\"");
             context.Response.Write(setting.ManageKey);
-            context.Response.Write("\" style=\"width:100%\" /></td></tr></table><input type=\"hidden\" name=\"operate\" value=\"main\" /><input type=\"submit\" value=\"Save\" /></form><br /><form action=\"\" method=\"post\"><input type=\"hidden\" name=\"operate\" value=\"record\" /><br />Records:<br /><table border=\"1\" style=\"width: 100%; table-layout: fixed;\" ><col width=\"250\"><col width=\"250\"><col width=\"100\"><col width=\"*\"><tr><th>Operate</th><th>Key</th><th>Permanent</th><th>Url</th></tr><tr><td><p style=\"text - align:left; \">Add / Change</p></td><td><input type=\"text\" name=\"key\" style=\"width:100%\" /></td><td><input type=\"checkbox\" name=\"valuePermanent\" />Permanent</td><td><input type=\"text\" name=\"value\" style=\"width:100%\" /></td></tr>");
+            context.Response.Write("\" style=\"width:100%\" /></td></tr></table><input type=\"hidden\" name=\"operate\" value=\"main\" /><input type=\"submit\" value=\"Save\" /></form><br /><form action=\"\" method=\"post\"><input type=\"hidden\" name=\"operate\" value=\"record\" /><br />Records:<br /><table border=\"1\" style=\"width: 100%; table-layout: fixed;\" ><col width=\"250\"><col width=\"250\"><col width=\"100\"><col width=\"*\"><tr><th>Operate</th><th>Key</th><th>Permanent</th><th>Url</th></tr><tr><td><p style=\"text - align:left; \">Add / Change</p></td><td><input type=\"text\" name=\"key\" list=\"usedkeys\" style=\"width:100%\" /></td><td><input type=\"checkbox\" name=\"valuePermanent\" />Permanent</td><td><input type=\"text\" name=\"value\" style=\"width:100%\" /></td></tr>");
             var records = setting.Records.OrderBy(i => i.Key).ToArray();
+            StringBuilder dataList = new StringBuilder();
+            dataList.Append("<datalist id=\"usedkeys\">");
             if (records.Any())
             {
                 var deletePrefix = "<input type=\"checkbox\" name=\"delete\" value=\"";
                 var deletePostfix = "\" />Delete";
                 foreach (var record in records)
                 {
+                    dataList.Append("<option value=\"").Append(record.Key).Append("\">");
                     context.Response.Write("<tr><td>");
                     context.Response.Write(deletePrefix);
                     context.Response.Write(HttpUtility.HtmlEncode(record.Key));
@@ -152,7 +156,10 @@ namespace SecretNest.ShortUrl
                     context.Response.Write("</td></tr>");
                 }
             }
-            context.Response.Write("</table><input type=\"submit\" value=\"Save\" /></form></body></html>");
+            dataList.Append("</datalist>");
+            context.Response.Write("</table>");
+            context.Response.Write(dataList.ToString());
+            context.Response.Write("<input type=\"submit\" value=\"Save\" /></form></body></html>");
         }
 
         public bool IsReusable
