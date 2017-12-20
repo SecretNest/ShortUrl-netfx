@@ -34,7 +34,13 @@ See the [change log](CHANGELOG.md) for changes.
 
 	3.3 Each alias host need a dedicated file.
 
-4 Upload files to server, including: Setting.*.txt, Redirect.*.txt, Short.ashx, Web.config, bin folder and its contents.
+4 Upload files to server, including:
+
+	Setting.*.txt
+	Redirect.*.txt
+	Short.ashx
+	Web.config
+	bin folder and its contents
 
 5 Access your site url with $$$$Manage$$$$ to setup. e.g. http://MySite.com/$$$$Manage$$$$
 
