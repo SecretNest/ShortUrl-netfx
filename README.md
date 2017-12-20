@@ -1,6 +1,6 @@
 # ShortUrl
 
-Short url generator with no database required.
+Short url redirector with no database required.
 
 Language: C#
 
