@@ -11,7 +11,7 @@ See the [change log](CHANGELOG.md) for changes.
 ## Features
 
 - No database required.
-- Multiple host name supported.
+- Multiple host names supported.
 
 ## Install
 
