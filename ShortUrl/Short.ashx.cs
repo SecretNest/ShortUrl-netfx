@@ -25,7 +25,7 @@ namespace SecretNest.ShortUrl
 
             if (string.IsNullOrWhiteSpace(code))
             {
-                Redirect(context, setting.Default);
+                Redirect(context, setting.Default.Url, setting.Default.IsPermanent);
             }
             else if (code == setting.ReloadKey)
             {
@@ -36,13 +36,13 @@ namespace SecretNest.ShortUrl
             {
                 ModifySetting(context, host, setting);
             }
-            else if (setting.Records.TryGetValue(code, out var url))
+            else if (setting.Records.TryGetValue(code, out var record))
             {
-                Redirect(context, url);
+                Redirect(context, record.Url, record.IsPermanent);
             }
             else
             {
-                Redirect(context, setting.Default);
+                Redirect(context, setting.Default.Url, false);
             }
         }
 
@@ -170,15 +170,15 @@ namespace SecretNest.ShortUrl
             }
         }
 
-        void Redirect(HttpContext context, UrlSetting setting)
+        void Redirect(HttpContext context, string url, bool isPermanent)
         {
-            if (setting.IsPermanent)
+            if (isPermanent)
             {
-                context.Response.RedirectPermanent(setting.Url);
+                context.Response.RedirectPermanent(url);
             }
             else
             {
-                context.Response.Redirect(setting.Url);
+                context.Response.Redirect(url);
             }
         }
     }
