@@ -14,7 +14,7 @@ This project is replaced by the dotnet core 3.1 version of [ShortUrl](https://gi
 
 ## Converting configs
 
-You can use the tool [ConvertConfigToShortUrlCore](ConvertConfigToShortUrlCore) to convert all old configs to the new format. Place all old configs and the new config file (optional) into the folder of the binary file of the converter project and run it.
+You can use the tool [ConvertConfigToShortUrlCore](ConvertConfigToShortUrlCore) to convert all old configs to the new format. Place all old configs and the new config file (optional) into the binary folder of the converter project and run the project.
 
 ## Features
 
