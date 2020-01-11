@@ -8,6 +8,14 @@ Platform: ASP.Net 4.0
 
 See the [change log](CHANGELOG.md) for changes.
 
+# This project is replaced
+
+This project is replaced by the dotnet core 3.1 version of [ShortUrl](https://github.com/SecretNest/ShortUrl).
+
+## Converting configs
+
+You can use the tool [ConvertConfigToShortUrlCore](ConvertConfigToShortUrlCore) to convert all old configs to the new format. Place all old configs and the new config file (optional) into the folder of the binary file of the converter project and run it.
+
 ## Features
 
 - No database required.
